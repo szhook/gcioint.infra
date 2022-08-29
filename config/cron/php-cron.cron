@@ -1,0 +1,18 @@
+# This is cron file for php-cron docker container
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+
+# default Bitrix cron events
+*  *  *  *  * sudo -u www-data /usr/bin/php /web/prod/bitrix/modules/main/tools/cron_events.php >>/var/log/php/cron_events.log
+# seo URL fixes
+#30 *  *  *  * www-data /usr/bin/nice -n 10 /usr/bin/php /web/prod/local/cron/find_and_fix_bugs_in_new_url.php 2>&1 >>/web/prod/local/cron/find_and_fix_bugs_in_new_url.log
+# sitemap generation
+#0  0  *  *  * www-data /usr/bin/nice -n 10 /usr/bin/php /web/prod/local/cron/bitrix.seo_sitemap_run.php 2>&1 >>/web/prod/local/cron/bitrix.seo_sitemap_run.log
+# exports to yandex and google
