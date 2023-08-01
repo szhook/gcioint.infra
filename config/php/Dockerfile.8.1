@@ -33,7 +33,7 @@ RUN apt-get update \
 # sudo to allow create logfile with www-data user
 # cron to run cronjobs in a separate container
 
-RUN usermod -u 1000 www-data
-RUN groupmod -g 1000 www-data
+RUN usermod -u 1001 www-data
+RUN groupmod -g 1001 www-data
 
 EXPOSE 9000
