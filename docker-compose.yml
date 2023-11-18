@@ -10,7 +10,7 @@ services:
     nginx:
         build: ./config/nginx
         hostname: nginx
-        container_name: nginx-gcom
+        container_name: nginx
         image: paskal/nginx:latest
         depends_on:
             - php
@@ -47,7 +47,9 @@ services:
             dockerfile: Dockerfile.8.2
         image: paskal/bitrix-php:8.2
         hostname: php
-        container_name: php-gcom
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        container_name: php
         depends_on:
             - memcached
             - memcached-sessions
@@ -55,7 +57,7 @@ services:
             - "9000"
         volumes:
             - ./web/prod:/web/prod
-            - ./web/dev:/web/dev
+            - ./web/tmp:/web/tmp
             - ./private/msmtprc:/etc/msmtprc
             # MySQL socket to prevent transferring data through TCP
             - ./private/mysqld:/var/run/mysqld
@@ -75,10 +77,15 @@ services:
         restart: unless-stopped
 
     php-cron:
+        build:
+            context: ./config/php
+            dockerfile: Dockerfile.8.2
         command: cron -f
         image: paskal/bitrix-php:8.2
         hostname: php-cron
-        container_name: php-cron-gcom
+        container_name: php-cron
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         depends_on:
             - memcached
             - memcached-sessions
@@ -88,10 +95,12 @@ services:
             - ./private/msmtprc:/etc/msmtprc
             # MySQL socket to prevent transferring data through TCP
             - ./private/mysqld:/var/run/mysqld
+            # Logs
+            - ./logs/php:/var/log/php
             # configuration
             - ./config/php/90-php.ini:/etc/php/8.2/cli/conf.d/90-php.ini
             # Cronjobs
-            - ./config/cron/php-cron.cron:/etc/cron.d/tasks:ro
+            - ./config/cron/php-cron.cron:/etc/tasks:ro
 
         logging:
             driver: json-file
@@ -104,7 +113,7 @@ services:
     mysql:
         image: percona/percona-server:8.0
         hostname: mysql
-        container_name: mysql-gcom
+        container_name: mysql
         # MYSQL_ROOT_PASSWORD, MYSQL_USER, MYSQL_PASSWORD
         env_file: private/environment/mysql.env
         expose:
@@ -139,7 +148,7 @@ services:
     memcached:
         image: memcached:1-alpine
         hostname: memcached
-        container_name: memcached-gcom
+        container_name: memcached
         restart: unless-stopped
         expose:
             - "11211"
@@ -147,7 +156,7 @@ services:
     memcached-sessions:
         image: memcached:1-alpine
         hostname: memcached-sessions
-        container_name: memcached-sessions-gcom
+        container_name: memcached-sessions
         restart: unless-stopped
         expose:
             - "11211"
