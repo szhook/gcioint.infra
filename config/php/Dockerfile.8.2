@@ -1,11 +1,4 @@
 FROM phpdockerio/php:8.2-fpm
-# https://github.com/bitrixdock/bitrixdock/blob/master/php82/Dockerfile
-
-LABEL org.opencontainers.image.authors="Dmitry Verkhoturov <paskal.07@gmail.com>" \
-      org.opencontainers.image.description="PHP 8.2 with everything needed for Bitrix" \
-      org.opencontainers.image.documentation="https://github.com/paskal/bitrix.infra" \
-      org.opencontainers.image.source="https://github.com/paskal/bitrix.infra.git" \
-      org.opencontainers.image.title="php"
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
@@ -39,8 +32,13 @@ RUN apt-get update \
 # without this, php container won't work if you forget to mount 90-php.ini
 COPY ./90-php.ini /etc/php/8.2/fpm/conf.d/90-php.ini
 COPY ./90-php.ini /etc/php/8.2/cli/conf.d/90-php.ini
+COPY ./php-cron.cron /web/php-cron.cron
 
-RUN usermod -u 1000 www-data
-RUN groupmod -g 1000 www-data
+RUN echo -n '' > /etc/php/8.2/cli/conf.d/20-phar.ini
+
+RUN usermod -u 1001 www-data
+RUN groupmod -g 1001 www-data
+
+RUN crontab -u www-data /web/php-cron.cron
 
 EXPOSE 9000
