@@ -1,27 +1,27 @@
-FROM phpdockerio/php:8.2-fpm
+FROM phpdockerio/php:8.3-fpm
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
-    php8.2-memcached \
-    php8.2-memcache \
-    php8.2-mbstring \
-    php8.2-mysql \
-    php8.2-intl \
-    php8.2-interbase \
-    php8.2-redis \
-    php8.2-soap \
-    php8.2-gd \
-    php8.2-imagick \
-    php8.2-opcache \
-    php8.2-zip \
-    php8.2-xdebug \
-    php-pear php8.2-dev libmcrypt-dev gcc make autoconf libc-dev pkg-config \
+    php8.3-memcached \
+    php8.3-memcache \
+    php8.3-mbstring \
+    php8.3-mysql \
+    php8.3-intl \
+    php8.3-interbase \
+    php8.3-redis \
+    php8.3-soap \
+    php8.3-gd \
+    php8.3-imagick \
+    php8.3-opcache \
+    php8.3-zip \
+    php8.3-xdebug \
+    php-pear php8.3-dev libmcrypt-dev gcc make autoconf libc-dev pkg-config \
     webp \
     msmtp \
     msmtp-mta \
     sudo \
     cron \
-    && pecl install mcrypt-1.0.6 \
+    && pecl install mcrypt-1.0.7 \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # msmtp to allow email sending
@@ -30,13 +30,13 @@ RUN apt-get update \
 # cron to run cronjobs in a separate container
 
 # without this, php container won't work if you forget to mount 90-php.ini
-COPY ./90-php.ini /etc/php/8.2/fpm/conf.d/90-php.ini
-COPY ./90-php.ini /etc/php/8.2/cli/conf.d/90-php.ini
+COPY ./90-php.ini /etc/php/8.3/fpm/conf.d/90-php.ini
+COPY ./90-php.ini /etc/php/8.3/cli/conf.d/90-php.ini
 COPY ./php-cron.cron /web/php-cron.cron
 
 COPY ./openssl.cnf /etc/ssl/openssl.cnf
 
-RUN echo -n '' > /etc/php/8.2/cli/conf.d/20-phar.ini
+RUN echo -n '' > /etc/php/8.3/cli/conf.d/20-phar.ini
 
 RUN usermod -u 1001 www-data
 RUN groupmod -g 1001 www-data
