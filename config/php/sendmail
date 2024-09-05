@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sed -e "s/From: root (Cron Daemon)/From: WHATEVER YOU LIKE/" | msmtp -t $BASH_ARGV
