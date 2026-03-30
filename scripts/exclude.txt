@@ -1,0 +1,6 @@
+cache
+backup
+managed_cache
+php_interface
+tmp
+.settings.php

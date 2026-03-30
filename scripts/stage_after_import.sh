@@ -1,0 +1,1 @@
+docker exec -it mysql /bin/sh -c 'mysql -ubitrix -p123 gcioru < stage_users.sql'
